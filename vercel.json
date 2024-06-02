@@ -1,0 +1,13 @@
+{
+  "version": 2,
+  "builds": [{ "src": "/index.js", "use": "@vercel/node" }],
+  "routes": [
+    {
+      "src": "/(.*)",
+      "headers": {
+        "Cache-Control": "no-store"
+      },
+      "dest": "/index.js"
+    }
+  ]
+}
