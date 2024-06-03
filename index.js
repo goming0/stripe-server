@@ -25,23 +25,23 @@ app.use(compression());
 app.post('/create-checkout-session', async (req, res) => {
   const stripe = Stripe(stripeSecretKey);
   const domain = link;
-  //get amount
-  const amount = req.body?.data || 1000;
+  //get product data
+  const data = req.body;
   try {
       //create stripe session
-      const session = await stripe.checkout.sessions.create({
+    const session = await stripe.checkout.sessions.create({
+        ...data,
           payment_method_types: ['card'],
-          line_items: [
-            ...amount
-          ],
           mode: 'payment',
-          success_url: frontUrl,
-          cancel_url: frontUrl,
+          success_url: `${frontUrl}/payment-success`,
+          cancel_url: `${frontUrl}/payment-cancel`,
           expand: ['payment_intent']
       });
 
       return res.send(session);
   } catch (err) {
+
+    console.log(data);
       console.log('stripe error', err);
   }
 });
@@ -51,4 +51,3 @@ app.listen(PORT, () => {
   console.log('\x1b[36m%s\x1b[0m', '\nExpress server has been started at the port ', PORT);
   console.log(`\n    Link to the site \x1b[35m${link}\x1b[0m`);
 });
-
